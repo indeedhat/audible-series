@@ -1,0 +1,4 @@
+.login
+*.json
+.venv
+__pycache__
