@@ -20,3 +20,6 @@ python .
 ```
 
 Follow the printed instructions for logging in, your new books will written to new_books.json
+
+## Credit
+This script makes use of [https://github.com/mkb79/Audible](https://github.com/mkb79/Audible) all credit goes to them
