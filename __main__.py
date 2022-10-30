@@ -16,7 +16,7 @@ def get_client() -> audible.Client:
     return audible.Client(auth=auth)
 
 
-def load_library_asns(client) -> list:
+def load_library_asns(client):
     if os.path.exists(LIBRARY_FILE):
         print(f"{LIBRARY_FILE} exists")
         books = json.load(open(LIBRARY_FILE))
@@ -25,9 +25,9 @@ def load_library_asns(client) -> list:
         with open(LIBRARY_FILE, "w") as new:
             new.write(json.dumps(books, indent="    "))
 
-    book_asns = []
+    book_asns = {}
     for book in books["items"]:
-        book_asns.append(book["asin"])
+        book_asns[book["asin"]] = " - ".join(a['name'] for a in book['authors'])
 
     return book_asns
 
@@ -61,15 +61,20 @@ def main():
 
                 checked.append(book["asin"])
 
+                author = to_check[asin]
+                if author not in new_books:
+                    new_books[author] = {}
+
                 series = book["publication_name"] if "publication_name" in book else "unknown"
-                if series not in new_books:
-                    new_books[series] = {}
+                if series not in new_books[author]:
+                    new_books[author][series] = {}
 
                 checked.append(book["asin"])
-                new_books[series][book["asin"]] = book["title"]
+                new_books[author][series][book["asin"]] = book["title"]
 
     with open(NEW_BOOKS_FILE, "w") as new:
         new.write(json.dumps(new_books, indent="    "))
+
 
 if __name__ == "__main__":
     main()
